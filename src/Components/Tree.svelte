@@ -19,11 +19,6 @@
 </script>
 
 
-<!--<canvas width={width} height={tree.depth * layerHeight}>-->
-<!--    -->
-<!--</canvas>-->
-
-
 <div class="Tree" style="--height: {layerHeight * tree.depth}px; --width: {width}px;">
     <BSTNode node={tree} size={nodeSize} {layerHeight} {width} x={width / 2}/>
 </div>
@@ -31,9 +26,9 @@
 <style>
     .Tree {
         overflow: scroll;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        /*display: flex;*/
+        /*align-items: center;*/
+        /*justify-content: center;*/
         position: relative;
         height: var(--height);
         width: var(--width);

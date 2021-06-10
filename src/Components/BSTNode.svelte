@@ -14,18 +14,14 @@
 
     $: offset = size / 2;
 
-
-    const widthDiv = nthFib(layer + 3)
-
-    console.log(`widthDiv for layer ${layer + 1}: ${widthDiv}  spacing: ${width / widthDiv}`)
-
-
+    const layerMax: number = node.maxNodesInLayer(layer);
+    const widthDiv: number = layerMax + 1
 </script>
 
 
 <div
         class="BSTNode"
-        style="--size: {size}; --top: {(layer - 1) * layerHeight + offset / 2}px; --left: {x}px"
+        style="--size: {size}; --top: {(layer - 1) * layerHeight + offset / 2}px; --left: {x - size / 2}px"
         on:click={() => {
             console.log(`x: ${x}`);
         }}
@@ -33,10 +29,24 @@
     <h1>{node.value}</h1>
 </div>
 {#if node.left !== null}
-    <svelte:self node={node.left} {size} layer={layer + 1} {layerHeight} {width} x={x - (width / widthDiv)}/>
+    <svelte:self
+            node={node.left}
+            {size}
+            layer={layer + 1}
+            {layerHeight}
+            {width}
+            x={x - ((width - (layerMax * size)) / widthDiv) / 2}
+    />
 {/if}
 {#if node.right !== null}
-    <svelte:self node={node.right} {size} layer={layer + 1} {layerHeight} {width} x={x + (width / widthDiv)}/>
+    <svelte:self
+            node={node.right}
+            {size}
+            layer={layer + 1}
+            {layerHeight}
+            {width}
+            x={x + ((width - (layerMax * size)) / widthDiv) / 2}
+    />
 {/if}
 
 
