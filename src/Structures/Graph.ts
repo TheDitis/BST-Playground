@@ -3,6 +3,7 @@ export default class Graph<T> {
     test: boolean = false
 
     constructor(nodeValues: T[], connections: number[][]) {
+        console.log("WORKING")
         if (nodeValues.length !== connections.length) {
             throw Error("nodeValues and connections arrays must be of the same length!")
         }
@@ -29,7 +30,7 @@ export default class Graph<T> {
 class Node<T> {
     value: T;
     connections: Node<T>[] = [];
-    
+
 
     constructor(value: T) {
         this.value = value;

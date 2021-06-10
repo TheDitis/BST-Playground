@@ -1,7 +1,8 @@
 <script lang="ts">
-	import Graph from "./Graph";
-	import BST from "./BST";
-	import BSTNode from "./BSTNode.svelte"
+	import Graph from "./Structures/Graph";
+	import BST from "./Structures/BST";
+	import Tree from "./Components/Tree.svelte";
+	import BSTNode from "./Components/BSTNode.svelte";
 	export let name: string;
 
 	// const graph = new Graph([10, 20, 30, 40], [[1], [2], [3], [0]])
@@ -24,6 +25,10 @@
 	tree.insert(12)
 	tree.insert(17)
 
+	// tree.insert(21);
+	// tree.insert(22);
+	// tree.insert(23);
+
 	console.log("DEPTH: ", tree.depth)
 
 	const treeIter = tree.iter("pre")
@@ -32,11 +37,13 @@
 </script>
 
 <main>
-	<h1>Hello {name}!</h1>
-	<BSTNode node={tree} size={window.innerWidth}/>
-<!--	<h3>{graph.test} {graph.setTest = true} {graph.test}</h3>-->
-<!--	<h3>{graph.values}</h3>-->
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+	<Tree
+		tree={tree}
+		width={window.innerWidth}
+		height={window.innerHeight}
+		nodeSize={100}
+		layerHeight={200}
+	/>
 	{#each [...treeIter] as v}
 		<h3>{v}</h3>
 	{/each}
@@ -45,7 +52,7 @@
 <style>
 	main {
 		text-align: center;
-		padding: 1em;
+		padding: 0;
 		max-width: 240px;
 		margin: 0 auto;
 	}

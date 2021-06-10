@@ -50,6 +50,29 @@ export default class BST<T> {
         return this._postOrderRecursive(this, asValues);
     }
 
+    iter(
+        order: "asc" | "desc" | "pre" | "post" = "asc",
+        asValues: boolean = true
+    ) {
+        switch (order) {
+            case "asc":
+                return this.inOrder(asValues);
+            case "desc":
+                return this.reverseOrder(asValues);
+            case "pre":
+                return this.preOrder(asValues);
+            case "post":
+                return this.postOrder(asValues);
+            default:
+                console.error(
+                    `invalid order indicator '${order}' passed to BST.iter(). Valid values are 'asc' (default) for ` +
+                    `in-order, 'desc' for reverse-order, 'pre' for pre-order, 'post' for post-order. Defaulting to ` +
+                    `in-order iteration`
+                )
+                return this.inOrder(asValues);
+        }
+    }
+
     * _inOrderRecursive (node: BST<T> | null, asValues: boolean = true) {
         if (node !== null) {
             yield* this._inOrderRecursive(node.left, asValues);
@@ -80,26 +103,6 @@ export default class BST<T> {
             yield* this._postOrderRecursive(node.left, asValues);
             yield asValues ? node.value : node;
         }
-    }
-
-
-
-    iter(
-        order: "asc" | "desc" | "pre" | "post" = "asc",
-        asValues: boolean = true
-    ) {
-
-        switch (order) {
-            case "asc":
-                return this.inOrder(asValues);
-            case "desc":
-                return this.reverseOrder(asValues);
-            case "pre":
-                return this.preOrder(asValues);
-            case "post":
-                return this.postOrder(asValues);
-        }
-
     }
 
 
