@@ -25,9 +25,19 @@
 	tree.insert(12)
 	tree.insert(17)
 
-	// tree.insert(21);
-	// tree.insert(22);
-	// tree.insert(23);
+	tree.insert(1);
+	tree.insert(3);
+
+	tree.insert(6);
+	tree.insert(8);
+
+	tree.insert(11);
+	tree.insert(13);
+
+	tree.insert(16);
+	tree.insert(18);
+
+
 
 	console.log("DEPTH: ", tree.depth)
 

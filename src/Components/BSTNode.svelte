@@ -1,34 +1,42 @@
 <script lang="ts">
     import BST from "../Structures/BST";
+    import {nthFib} from "../utlis";
 
     export let node: BST<any>;
-    // export let x: number = 0;
-    export let xOffset: number = 0
+    export let x: number = 0;
+    // export let xOffset: number = 0
     export let width: number = 500;
 
     export let size: number = 60;
-    export let layer: number = 0;
+    export let layer: number = 1;
     export let layerHeight: number = 80;
 
+
     $: offset = size / 2;
+
+
+    const widthDiv = nthFib(layer + 3)
+
+    console.log(`widthDiv for layer ${layer + 1}: ${widthDiv}  spacing: ${width / widthDiv}`)
+
+
 </script>
 
 
 <div
         class="BSTNode"
-        style="--size: {size}; --top: {layer * layerHeight + offset / 2}px; --left: {xOffset + (width / 2)}px"
+        style="--size: {size}; --top: {(layer - 1) * layerHeight + offset / 2}px; --left: {x}px"
         on:click={() => {
-            console.log("xOffset: ", xOffset);
-            console.log("width: ", width);
+            console.log(`x: ${x}`);
         }}
 >
     <h1>{node.value}</h1>
 </div>
 {#if node.left !== null}
-    <svelte:self node={node.left} {size} layer={layer + 1} {layerHeight} width={width - (width / 2)} xOffset={xOffset - xOffset / 2}/>
+    <svelte:self node={node.left} {size} layer={layer + 1} {layerHeight} {width} x={x - (width / widthDiv)}/>
 {/if}
 {#if node.right !== null}
-    <svelte:self node={node.right} {size} layer={layer + 1} {layerHeight} width={width - (width / 2)} xOffset={xOffset + width / 2}/>
+    <svelte:self node={node.right} {size} layer={layer + 1} {layerHeight} {width} x={x + (width / widthDiv)}/>
 {/if}
 
 

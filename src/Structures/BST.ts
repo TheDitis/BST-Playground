@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 export default class BST<T> {
     value: T;
     left: BST<T> | null = null;
@@ -9,14 +11,17 @@ export default class BST<T> {
 
     get depth(): number {
         const calcDepth = (node: BST<T>): number => {
-            if (node !== null) {
-                const left = calcDepth(node.left);
-                const right = calcDepth(node.right);
-                return Math.max(left, right) + 1;
-            }
-            return 0;
+            if (node === null)
+                return 0;
+            const left = calcDepth(node.left);
+            const right = calcDepth(node.right);
+            return Math.max(left, right) + 1;
         }
         return calcDepth(this);
+    }
+
+    get maxWidth(): number {
+        return this.maxNodesInLayer(this.depth)
     }
 
     insert(value: T) {
@@ -103,6 +108,18 @@ export default class BST<T> {
             yield* this._postOrderRecursive(node.left, asValues);
             yield asValues ? node.value : node;
         }
+    }
+
+    maxNodesInLayer(layerNum: number): number {
+        if (layerNum <= 0) {
+            console.error("layerNum passed to BST.maxNodes() must be an integer greater than 0!")
+            return 0;
+        }
+        let accumulator = 1;
+        for (let i = 1; i < layerNum; i++) {
+            accumulator *= 2;
+        }
+        return accumulator
     }
 
 
