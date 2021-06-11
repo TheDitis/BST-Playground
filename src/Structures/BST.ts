@@ -24,6 +24,12 @@ export default class BST<T> {
         return this.maxNodesInLayer(this.depth)
     }
 
+    get hasLeftChild(): boolean { return this.left !== null }
+
+    get hasRightChild(): boolean { return this.right !== null }
+
+    get hasChildren(): boolean { return this.hasLeftChild || this.hasRightChild }
+
     insert(value: T) {
         if (value < this.value) {
             if (this.left === null) {

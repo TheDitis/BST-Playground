@@ -1,62 +1,83 @@
 <script lang="ts">
     import BST from "../Structures/BST";
-    import {nthFib} from "../utlis";
+    import BSTBranchSet from "./BSTBranchSet.svelte";
 
     export let node: BST<any>;
-    export let x: number = 0;
-    // export let xOffset: number = 0
     export let width: number = 500;
-
-    export let size: number = 60;
+    export let nodeSize: number = 60;
     export let layer: number = 1;
     export let layerHeight: number = 80;
 
 
-    $: offset = size / 2;
 
-    const layerMax: number = node.maxNodesInLayer(layer);
-    const widthDiv: number = layerMax + 1
 </script>
 
 
-<div
-        class="BSTNode"
-        style="--size: {size}; --top: {(layer - 1) * layerHeight + offset / 2}px; --left: {x - size / 2}px"
-        on:click={() => {
-            console.log(`x: ${x}`);
-        }}
->
-    <h1>{node.value}</h1>
-</div>
-{#if node.left !== null}
-    <svelte:self
-            node={node.left}
-            {size}
-            layer={layer + 1}
-            {layerHeight}
-            {width}
-            x={x - ((width - (layerMax * size)) / widthDiv) / 2}
-    />
-{/if}
-{#if node.right !== null}
-    <svelte:self
-            node={node.right}
-            {size}
-            layer={layer + 1}
-            {layerHeight}
-            {width}
-            x={x + ((width - (layerMax * size)) / widthDiv) / 2}
-    />
-{/if}
 
+
+<div class="BSTNode" style="--layerHeight: {node.hasChildren ? layerHeight : nodeSize}px">
+
+    <div class="selfSection">
+        <div class="node" style="--nodeSize: {nodeSize}">
+            <h1>{node.value}</h1>
+        </div>
+
+        {#if node.hasChildren}
+            <BSTBranchSet {width} height={layerHeight - nodeSize} left={node.hasLeftChild} right={node.hasRightChild}/>
+        {/if}
+    </div>
+
+
+    <div class="childrenSection">
+        <div class="child">
+            {#if node.hasLeftChild}
+                <svelte:self
+                    node={node.left}
+                    {nodeSize}
+                    layer={layer + 1}
+                    {layerHeight}
+                    width={width / 2}
+                />
+            {/if}
+        </div>
+        <div class="child">
+            {#if node.hasRightChild}
+                <svelte:self
+                    node={node.right}
+                    {nodeSize}
+                    layer={layer + 1}
+                    {layerHeight}
+                    width={width / 2}
+                />
+            {/if}
+        </div>
+    </div>
+</div>
 
 <style>
     .BSTNode {
-        position: absolute;
-        top: var(--top);
-        left: var(--left);
-        width: calc(var(--size) * 1px);
-        height: calc(var(--size) * 1px);
+        position: relative;
+        display: flex;
+        box-sizing: border-box;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .selfSection {
+        top: 0;
+        height: var(--layerHeight);
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+    }
+
+    .node {
+        width: calc(var(--nodeSize) * 1px);
+        height: calc(var(--nodeSize) * 1px);
         padding: 0;
         margin: 0;
         background: rgba(0, 200, 200, 0.4);
@@ -68,7 +89,13 @@
         justify-content: center;
     }
 
-    h1 {
+    .childrenSection {
+        display: flex;
+        width: 100%;
+    }
+
+    .child {
+        width: 50%;
         margin: 0;
         padding: 0;
     }

@@ -2,7 +2,6 @@
 	import Graph from "./Structures/Graph";
 	import BST from "./Structures/BST";
 	import Tree from "./Components/Tree.svelte";
-	import BSTNode from "./Components/BSTNode.svelte";
 	export let name: string;
 
 	// const graph = new Graph([10, 20, 30, 40], [[1], [2], [3], [0]])
@@ -36,6 +35,8 @@
 
 	tree.insert(16);
 	tree.insert(18);
+
+	// tree.insert(0);
 
 
 
