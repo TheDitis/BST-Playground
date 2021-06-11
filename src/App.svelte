@@ -35,16 +35,6 @@
 
 	tree.insert(16);
 	tree.insert(18);
-
-	// tree.insert(0);
-
-
-
-	console.log("DEPTH: ", tree.depth)
-
-	const treeIter = tree.iter("pre")
-	// console.log(typeof treeIter)
-
 </script>
 
 <main>
@@ -55,9 +45,6 @@
 		nodeSize={100}
 		layerHeight={200}
 	/>
-	{#each [...treeIter] as v}
-		<h3>{v}</h3>
-	{/each}
 </main>
 
 <style>

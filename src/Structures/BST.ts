@@ -30,6 +30,20 @@ export default class BST<T> {
 
     get hasChildren(): boolean { return this.hasLeftChild || this.hasRightChild }
 
+    get childCount(): number {
+        let count: number = 0;
+        if (this.hasRightChild)
+            count++;
+        if (this.hasLeftChild)
+            count++;
+        return count;
+    }
+
+    get isFull(): boolean {
+        const nChildren: number = this.childCount;
+        return (nChildren === 0 || nChildren === 2)
+    }
+
     insert(value: T) {
         if (value < this.value) {
             if (this.left === null) {

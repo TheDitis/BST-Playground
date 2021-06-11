@@ -8,16 +8,10 @@
     export let layerHeight: number = 100;
     export let nodeSize: number = 60;
 
-
-
     if (height !== null) {
         // TODO: See if you can make tree a required parameter when at wifi, or handle absence
         layerHeight = height / tree.depth
     }
-
-    console.log("max layer 3: ", tree.maxNodesInLayer(3))
-    console.log("max width for tree: ", tree.maxWidth)
-
 </script>
 
 
