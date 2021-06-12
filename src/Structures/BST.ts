@@ -1,5 +1,21 @@
 import _ from "lodash";
 
+// TODO: Catch up on documentation
+
+interface NodeObject {
+    id: string,
+    left: string | null,
+    right: string | null,
+    value: any
+}
+
+
+interface TreeObject {
+    root: string,
+    nodes: NodeObject[]
+}
+
+
 export default class BST<T> {
     value: T;
     left: BST<T> | null = null;
@@ -25,9 +41,13 @@ export default class BST<T> {
         return BST.maxNodesInLayer(this.depth)
     }
 
-    get hasLeftChild(): boolean { return this.left !== null }
+    get hasLeftChild(): boolean {
+        return this.left !== null
+    }
 
-    get hasRightChild(): boolean { return this.right !== null }
+    get hasRightChild(): boolean {
+        return this.right !== null
+    }
 
     get hasChildren(): boolean {
         return this.hasLeftChild || this.hasRightChild
@@ -35,19 +55,62 @@ export default class BST<T> {
 
     get childCount(): number {
         let count: number = 0;
-        if (this.hasRightChild)
-            count++;
-        if (this.hasLeftChild)
-            count++;
+        if (this.hasRightChild) count++;
+        if (this.hasLeftChild) count++;
         return count;
     }
+
+    get nodeCount(): number {
+        const deepCountChildren = (node: BST<T>): number => {
+            if (node === null) return 0;
+            let leftChildren = deepCountChildren(node.left);
+            let rightChildren = deepCountChildren(node.right);
+            return 1 + leftChildren + rightChildren;
+        }
+
+        return deepCountChildren(this);
+    }
+
+    get capacity(): number {
+        return this.potentialCapacityAtHeight()
+    }
+
+    get freeCapacity(): number {
+        return this.capacity - this.nodeCount
+    }
+
+    get isValid(): boolean {
+        const isValidHelper = (node: BST<T>): [boolean, T, T] => {
+            let lOkay: boolean, rOkay: boolean;
+            let okayWithLeft = true, okayWithRight = true;
+            let lMin: T, lMax: T, rMin: T, rMax: T;
+            lMin = lMax = rMin = rMax = node.value;
+            if (node.left !== null) {
+                [lOkay, lMin, lMax] = isValidHelper(node.left);
+                okayWithLeft = (node.value > _.max([lMin, lMax])) && lOkay;
+            }
+            if (node.right !== null) {
+                [rOkay, rMin, rMax] = isValidHelper(node.right);
+                okayWithRight = node.value <= _.min([rMin, rMax]) && rOkay;
+            }
+            let isOkay = okayWithLeft && okayWithRight;
+            let newMin = _.min([node.value, lMin, lMax, rMin, rMax]);
+            let newMax = _.max([node.value, lMin, lMax, rMin, rMax]);
+            return [isOkay, newMin, newMax];
+        }
+
+        return isValidHelper(this)[0];
+    }
+
 
     get isFull(): boolean {
         const nChildren: number = this.childCount;
         return (nChildren === 0 || nChildren === 2)
     }
 
-    get isBalanced(): boolean { return BST.isBalancedWithMaxDepth(this)[0] }
+    get isBalanced(): boolean {
+        return BST.isBalancedWithMaxDepth(this)[0]
+    }
 
     static isBalancedWithMaxDepth(
         node: BST<any>,
@@ -73,14 +136,11 @@ export default class BST<T> {
         if (value < this.value) {
             if (this.left === null) {
                 this.left = new BST(value);
-            }
-            else this.left.insert(value);
-        }
-        else {
+            } else this.left.insert(value);
+        } else {
             if (this.right === null) {
                 this.right = new BST(value);
-            }
-            else this.right.insert(value);
+            } else this.right.insert(value);
         }
     }
 
@@ -124,7 +184,7 @@ export default class BST<T> {
         }
     }
 
-    * _inOrderRecursive (node: BST<T> | null, asValues: boolean = true) {
+    * _inOrderRecursive(node: BST<T> | null, asValues: boolean = true) {
         if (node !== null) {
             yield* this._inOrderRecursive(node.left, asValues);
             yield asValues ? node.value : node;
@@ -132,7 +192,7 @@ export default class BST<T> {
         }
     }
 
-    * _reverseOrderRecursive (node: BST<T> | null, asValues: boolean = true) {
+    * _reverseOrderRecursive(node: BST<T> | null, asValues: boolean = true) {
         if (node !== null) {
             yield* this._reverseOrderRecursive(node.right, asValues);
             yield asValues ? node.value : node;
@@ -140,7 +200,7 @@ export default class BST<T> {
         }
     }
 
-    * _preOrderRecursive (node: BST<T> | null, asValues: boolean = true) {
+    * _preOrderRecursive(node: BST<T> | null, asValues: boolean = true) {
         if (node !== null) {
             yield asValues ? node.value : node;
             yield* this._preOrderRecursive(node.right, asValues);
@@ -148,7 +208,7 @@ export default class BST<T> {
         }
     }
 
-    * _postOrderRecursive (node: BST<T> | null, asValues: boolean = true) {
+    * _postOrderRecursive(node: BST<T> | null, asValues: boolean = true) {
         if (node !== null) {
             yield* this._postOrderRecursive(node.right, asValues);
             yield* this._postOrderRecursive(node.left, asValues);
@@ -189,6 +249,26 @@ export default class BST<T> {
         return layerCaps.reduce((a, b) => a + b, 0);
     }
 
+    static fromObject(
+        treeObj: TreeObject | { tree: TreeObject }
+    ): BST<any> {
+        if ("tree" in treeObj) treeObj = treeObj.tree;
+        const nodes = {}
+        for (let node of treeObj.nodes) nodes[node.id] = node;
+
+        const constructionHelper = (nodeId: string | null): BST<any> => {
+            if (nodeId === null) return null;
+            const nodeObj: NodeObject = nodes[nodeId];
+            const node = new BST(nodeObj.value);
+            node.left = constructionHelper(nodeObj.left);
+            node.right = constructionHelper(nodeObj.right);
+            return node;
+        }
+
+        return constructionHelper(treeObj.root)
+
+    }
+
     /**
      * Creates a new BST from the given array of values
      * @param {[]} values - array of values you want to construct a BST out of
@@ -207,7 +287,6 @@ export default class BST<T> {
         );
         if (minHeight) return BST.constructMinHeight(values)
         else return BST.constructInOrder(values);
-
     }
 
     /**
@@ -220,6 +299,8 @@ export default class BST<T> {
     static constructMinHeight(values: any[]): BST<any> | null {
 
         function minHeightConstructor(array: any[]): BST<any> | null {
+            // TODO: make this able to handle repeat numbers without becoming
+            //  invalid if easily possible, or at least implement isValid
             if (array.length == 0) return null;
 
             // Create a new node from the middle value of the input array
