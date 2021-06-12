@@ -1,40 +1,13 @@
 <script lang="ts">
-	import Graph from "./Structures/Graph";
 	import BST from "./Structures/BST";
 	import Tree from "./Components/Tree.svelte";
 	export let name: string;
 
-	// const graph = new Graph([10, 20, 30, 40], [[1], [2], [3], [0]])
+	// const tree = BST.fromArray([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+	const tree = BST.constructFullPerfectTree(4, 10);
 
-	const tree = new BST(10)
-	// tree.left = new BST(5)
-	// tree.left.left = new BST(2)
-	// tree.left.left.left = new BST(1)
-	// tree.left.right = new BST(5)
-	// tree.right = new BST(15)
-	// tree.right.left = new BST(13)
-	// tree.right.left.right = new BST(14)
-	// tree.right.right = new BST(22)
-
-	tree.insert(5)
-	tree.insert(2)
-	tree.insert(7)
-
-	tree.insert(15)
-	tree.insert(12)
-	tree.insert(17)
-
-	tree.insert(1);
-	tree.insert(3);
-
-	tree.insert(6);
-	tree.insert(8);
-
-	tree.insert(11);
-	tree.insert(13);
-
-	tree.insert(16);
-	tree.insert(18);
+	console.log("is balanced? ", tree.isBalanced)
+	// console.log(BST.constructFullPerfectTree())
 </script>
 
 <main>
@@ -45,6 +18,7 @@
 		nodeSize={100}
 		layerHeight={200}
 	/>
+
 </main>
 
 <style>
