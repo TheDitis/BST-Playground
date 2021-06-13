@@ -3,6 +3,9 @@ import _ from "lodash";
 // TODO: Catch up on documentation
 // TODO: Cache certain properties until structure changes to save resources
 
+// TODO: add remove and contains methods
+// TODO: Create subclass specifically for the svelte interface
+
 interface NodeObject {
     id: string,
     left: string | null,
@@ -55,6 +58,106 @@ export default class BST<T> {
                 this.right = new BST(value);
             } else this.right.insert(value);
         }
+    }
+
+    remove(value: T) {
+        const removeHelper = function (
+            node: BST<T>,
+            target: T,
+            parent: BST<T> | null = null,
+            direction: "left" | "right" = "left"
+        ) {
+            if (node === null) return;
+
+            // if the droids you're looking for are to the left:
+            if (target < node.value) {
+                removeHelper(node.left, target, node, "left");
+            }
+
+            // or if they're to the right:
+            else if ( target > node.value) {
+                removeHelper(node.right, target, node, "right");
+            }
+
+            // if these are the droids you're looking for:
+            else {
+                // if the droid has no parents:
+                if (parent === null) {
+                    console.warn(
+                        "The droid you are looking for has no parents " +
+                        "to remove it from. You're on your own kid. Maybe " +
+                        "you could just use the delete operator."
+                    )
+                }
+                // Remove and replace with the closest value
+                // if the droids you're looking for are lesser beings, look left
+                if (node.hasLeftChild && target < node.value) {
+                    let newTarget = node.left.maxVal;
+                    removeHelper(node.left, newTarget, node, "left");
+                    node.value = newTarget;
+                }
+                // if they are greater, look right
+                else if (node.hasRightChild && target >= node.value) {
+                    let newTarget = node.right.minVal;
+                    removeHelper(node.right, newTarget, node, "right");
+                    node.value = newTarget;
+                }
+                // if it has a parent but no children
+                if (!node.hasChildren) {
+                    // separate them from their parents
+                    parent[direction] = null;
+                }
+            }
+        }
+
+        removeHelper(this, value);
+    }
+
+    copy(shallow: boolean = false): BST<T> {
+        if (shallow) {
+            console.warn(
+                "Warning: the BST.copy() method with shallow set to " +
+                "true can cause confusing results. Keeping shallow false " +
+                "(default) is recommended."
+            )
+            return Object.assign(
+                Object.create(Object.getPrototypeOf(this)),
+                this
+            )
+        }
+        else return this.deepCopy();
+    }
+
+    deepCopy(): BST<T> {
+        if (!this.isValid) console.error(
+            "deepCopy currently only works on valid BSTs. If you manually " +
+            "created an invalid BST, this copy will be different."
+        )
+        const values = this.toArray("preorder");
+        const root = new BST(values.shift());
+        root.insertAll(values);
+        return root;
+    }
+
+    contains(value: T): boolean {
+        if (this.value === value) return true;
+
+        if (this.left !== null && value < this.value)
+            return this.left.contains(value);
+        else
+            return this.right.contains(value);
+    }
+
+    get minVal(): T {
+        if (this.hasLeftChild)
+            return this.left.minVal;
+        return this.value;
+    }
+
+    get maxVal(): T {
+        if (this.hasRightChild)
+            return this.right.maxVal;
+        return this.value;
     }
 
     get depth(): number {
@@ -291,7 +394,6 @@ export default class BST<T> {
 
     static potentialCapacityAtHeight(numLayers: number | null = null): number {
         const layerCaps = BST.layerCapacities(numLayers)
-        console.log("layerCaps for ", numLayers, " layers: ", layerCaps)
         return layerCaps.reduce((a, b) => a + b, 0);
     }
 
@@ -406,7 +508,6 @@ export default class BST<T> {
         min: number = 0,
     ): BST<number> => {
         const cap: number = BST.potentialCapacityAtHeight(numLayers)
-        console.log(`cap at ${numLayers} layers: ${cap}`)
         return BST.fromArray(
             _.range(
                 min,
