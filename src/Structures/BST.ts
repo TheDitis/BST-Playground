@@ -1,6 +1,7 @@
 import _ from "lodash";
 
 // TODO: Catch up on documentation
+// TODO: Cache certain properties until structure changes to save resources
 
 interface NodeObject {
     id: string,
@@ -9,20 +10,51 @@ interface NodeObject {
     value: any
 }
 
-
 interface TreeObject {
     root: string,
     nodes: NodeObject[]
 }
 
+type InOrderTraversalString = "asc" | "inorder";
+type ReverseOrderTraversalString = "desc" | "reverse" | "reverseorder";
+type PreOrderTraversalString = "pre" | "preorder";
+type PostOrderTraversalString = "post" | "postorder";
+
+type TraversalOrderString = (
+    InOrderTraversalString |
+    ReverseOrderTraversalString |
+    PreOrderTraversalString |
+    PostOrderTraversalString
+)
+
+
 
 export default class BST<T> {
     value: T;
-    left: BST<T> | null = null;
-    right: BST<T> | null = null;
+    left: BST<T> | null;
+    right: BST<T> | null;
 
-    constructor(value: T) {
+    constructor(
+        value: T,
+        left: BST<T> | null = null,
+        right: BST<T> | null = null
+    ) {
+        if (value === null) throw Error("Value passed to BST cannot be null")
         this.value = value;
+        this.left = left;
+        this.right = right;
+    }
+
+    insert(value: T) {
+        if (value < this.value) {
+            if (this.left === null) {
+                this.left = new BST(value);
+            } else this.left.insert(value);
+        } else {
+            if (this.right === null) {
+                this.right = new BST(value);
+            } else this.right.insert(value);
+        }
     }
 
     get depth(): number {
@@ -102,15 +134,12 @@ export default class BST<T> {
         return isValidHelper(this)[0];
     }
 
-
     get isFull(): boolean {
         const nChildren: number = this.childCount;
         return (nChildren === 0 || nChildren === 2)
     }
 
-    get isBalanced(): boolean {
-        return BST.isBalancedWithMaxDepth(this)[0]
-    }
+    get isBalanced(): boolean { return BST.isBalancedWithMaxDepth(this)[0] }
 
     static isBalancedWithMaxDepth(
         node: BST<any>,
@@ -132,47 +161,47 @@ export default class BST<T> {
         ]
     }
 
-    insert(value: T) {
-        if (value < this.value) {
-            if (this.left === null) {
-                this.left = new BST(value);
-            } else this.left.insert(value);
-        } else {
-            if (this.right === null) {
-                this.right = new BST(value);
-            } else this.right.insert(value);
-        }
-    }
-
-    inOrder(asValues: boolean = true) {
-        return this._inOrderRecursive(this, asValues);
+    inOrder(asValues: boolean = true, reverse: boolean = false) {
+        return this._inOrderRecursive(this, asValues, reverse);
     }
 
     reverseOrder(asValues: boolean = true) {
-        return this._reverseOrderRecursive(this, asValues);
+        return this._inOrderRecursive(this, asValues, true)
     }
 
-    preOrder(asValues: boolean = true) {
+    preOrder(asValues: boolean = true, reverse: boolean = false) {
+        if (reverse) return this._postOrderRecursive(this, asValues, reverse);
         return this._preOrderRecursive(this, asValues);
     }
 
-    postOrder(asValues: boolean = true) {
+    postOrder(asValues: boolean = true, reverse: boolean = false) {
+        if (reverse) return this._preOrderRecursive(this, asValues, reverse);
         return this._postOrderRecursive(this, asValues);
     }
 
     iter(
-        order: "asc" | "desc" | "pre" | "post" = "asc",
-        asValues: boolean = true
+        order: TraversalOrderString = "asc",
+        asValues: boolean = true,
+        reverse: boolean = false
     ) {
         switch (order) {
             case "asc":
-                return this.inOrder(asValues);
+            case "inorder":
+                return this.inOrder(asValues, reverse);
             case "desc":
+            case "reverse":
+            case "reverseorder":
+                if (reverse) console.warn(
+                    "reverse-order iteration of BST does not accept the " +
+                    "'reverse' argument. use inorder (default) instead."
+                )
                 return this.reverseOrder(asValues);
             case "pre":
-                return this.preOrder(asValues);
+            case "preorder":
+                return this.preOrder(asValues, reverse);
             case "post":
-                return this.postOrder(asValues);
+            case "postorder":
+                return this.postOrder(asValues, reverse);
             default:
                 console.error(
                     `invalid order indicator '${order}' passed to BST.iter(). `
@@ -184,34 +213,51 @@ export default class BST<T> {
         }
     }
 
-    * _inOrderRecursive(node: BST<T> | null, asValues: boolean = true) {
+    toArray(
+        order: TraversalOrderString = "asc",
+        reverse: boolean = false
+    ): T[] {
+        return Array.from(this.iter(order, true, reverse))
+    }
+
+    * _inOrderRecursive(
+        node: BST<T> | null,
+        asValues: boolean = true,
+        reverse: boolean = false
+    ) {
         if (node !== null) {
-            yield* this._inOrderRecursive(node.left, asValues);
+            let children = [node.left, node.right];
+            if (reverse) children.reverse();
+            yield* this._inOrderRecursive(children[0], asValues, reverse);
             yield asValues ? node.value : node;
-            yield* this._inOrderRecursive(node.right, asValues);
+            yield* this._inOrderRecursive(children[1], asValues, reverse);
         }
     }
 
-    * _reverseOrderRecursive(node: BST<T> | null, asValues: boolean = true) {
+    * _preOrderRecursive(
+        node: BST<T> | null,
+        asValues: boolean = true,
+        reverse: boolean = false
+    ) {
         if (node !== null) {
-            yield* this._reverseOrderRecursive(node.right, asValues);
+            let children = [node.left, node.right];
+            if (reverse) children.reverse();
             yield asValues ? node.value : node;
-            yield* this._reverseOrderRecursive(node.left, asValues);
+            yield* this._preOrderRecursive(children[0], asValues, reverse);
+            yield* this._preOrderRecursive(children[1], asValues, reverse);
         }
     }
 
-    * _preOrderRecursive(node: BST<T> | null, asValues: boolean = true) {
+    * _postOrderRecursive(
+        node: BST<T> | null,
+        asValues: boolean = true,
+        reverse: boolean = false
+    ) {
         if (node !== null) {
-            yield asValues ? node.value : node;
-            yield* this._preOrderRecursive(node.right, asValues);
-            yield* this._preOrderRecursive(node.left, asValues);
-        }
-    }
-
-    * _postOrderRecursive(node: BST<T> | null, asValues: boolean = true) {
-        if (node !== null) {
-            yield* this._postOrderRecursive(node.right, asValues);
-            yield* this._postOrderRecursive(node.left, asValues);
+            let children = [node.left, node.right];
+            if (reverse) children.reverse();
+            yield* this._postOrderRecursive(children[0], asValues, reverse);
+            yield* this._postOrderRecursive(children[1], asValues, reverse);
             yield asValues ? node.value : node;
         }
     }
@@ -266,7 +312,6 @@ export default class BST<T> {
         }
 
         return constructionHelper(treeObj.root)
-
     }
 
     /**
@@ -332,6 +377,12 @@ export default class BST<T> {
         root.insertAll(values.slice(1));
         return root;
     }
+
+
+    static reconstructFromPreOrder(preOrderValues: any[]): BST<any> | null {
+        return BST.constructInOrder(preOrderValues);
+    }
+
 
     /**
      * Calls this.insert for each value in passed array
