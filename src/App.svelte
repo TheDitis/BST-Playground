@@ -21,7 +21,7 @@
 	// }
 
 	let preOrderTraversalValues = [10, 4, 2, 1, 3, 17, 19, 18]
-	let tree = BST.fromArray(preOrderTraversalValues)
+	let tree = BST.from(preOrderTraversalValues)
 
 	// let tree = new BST(10);
 	// tree.left = new BST(4);
@@ -32,8 +32,9 @@
 	// tree.right.right = new BST(19);
 	// tree.right.right.left = new BST(18);
 
-	let tree2: BST<any> = tree.copy(true);
-	tree2.remove(10)
+	let tree2 = tree.inverted();
+	// let tree2: BST<any> = tree.copy();
+	// tree2.remove(10)
 	// tree2.remove(18)
 </script>
 

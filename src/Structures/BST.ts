@@ -18,6 +18,10 @@ interface TreeObject {
     nodes: NodeObject[]
 }
 
+interface NestedTreeObject {
+    tree: TreeObject
+}
+
 type InOrderTraversalString = "asc" | "inorder";
 type ReverseOrderTraversalString = "desc" | "reverse" | "reverseorder";
 type PreOrderTraversalString = "pre" | "preorder";
@@ -365,6 +369,27 @@ export default class BST<T> {
         }
     }
 
+    invert() {
+
+        const invertHelper = (node: BST<T> | null): BST<T> | null => {
+            if (node === null) return null;
+
+            const tempLeft = node.left;
+            node.left = invertHelper(node.right);
+            node.right = invertHelper(tempLeft);
+
+            return node;
+        }
+
+        invertHelper(this);
+    }
+
+    inverted(): BST<T> {
+        const selfCopy = this.deepCopy();
+        selfCopy.invert();
+        return selfCopy;
+    }
+
     static maxNodesInLayer(layerNum: number): number {
         if (layerNum <= 0) {
             console.error("layerNum passed to BST.maxNodes() must be an " +
@@ -395,6 +420,13 @@ export default class BST<T> {
     static potentialCapacityAtHeight(numLayers: number | null = null): number {
         const layerCaps = BST.layerCapacities(numLayers)
         return layerCaps.reduce((a, b) => a + b, 0);
+    }
+
+    static from(source: TreeObject | { tree: TreeObject }): BST<any>;
+    static from(source: any[]): BST<any>;
+    static from(source: any[] | TreeObject | { tree: TreeObject }) : BST<any> {
+        if (source instanceof Array) return BST.fromArray(source);
+        return this.fromObject(source);
     }
 
     static fromObject(
