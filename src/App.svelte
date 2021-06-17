@@ -4,10 +4,12 @@
 	import TreeInfoRow from "./Components/TreeInfoBar.svelte";
 	import TreeControls from "./Components/TreeControls.svelte";
 
+	import {sizes} from "./stores/stores";
 	import {tree} from "./stores/treeStores";
+	import DragResizeBar from "./Components/DragResizeBar.svelte";
 
-	let controlBarWidth;
-	let infoBarHeight;
+	// let controlBarWidth;
+	// let infoBarHeight;
 
 	console.log("VALUE: ", $tree)
 
@@ -30,26 +32,31 @@
 
 	// let tree = BST.from(preOrderTraversalValues)
 
-	console.log("bar height: ", infoBarHeight)
+	// console.log("bar height: ", infoBarHeight)
 	// were passed to Tree
 	// width={window.innerWidth}
 	// height={window.innerHeight}
 </script>
 
 <main>
-	<div class="treeAndControlsSection" bind:clientHeight={infoBarHeight}>
-
-		<TreeControls bind:tree={$tree} bind:width={controlBarWidth} />
+	<div class="treeAndControlsSection" style="height: {$sizes.main[1]}px">
+		<TreeControls bind:tree={$tree}/>
 		<Tree
-				height={infoBarHeight}
-				width={window.innerWidth - controlBarWidth}
+				height={$sizes.info[1]}
+				width={$sizes.tree[0]}
 				tree={$tree}
 				nodeSize={100}
 				layerHeight={200}
 		/>
+		<DragResizeBar
+				side="bottom"
+				targetName="main"
+				offset={true}
+				max={window.innerHeight - 180}
+		/>
 	</div>
 
-	<TreeInfoRow bind:tree={$tree}/>
+	<TreeInfoRow height={$sizes.info[1]} bind:tree={$tree}  />
 </main>
 
 <style>
@@ -67,14 +74,11 @@
 	}
 
 	.treeAndControlsSection {
+		position: relative;
 		display: flex;
+		z-index: 20;
+		border-bottom: 10px solid rgba(42, 42, 42, 1);
 		/*flex-direction: column;*/;
-		height: 90vh;
+		/*height: 90vh;*/
 	}
-
-	/*@media (min-width: 640px) {*/
-	/*	main {*/
-	/*		max-width: none;*/
-	/*	}*/
-	/*}*/
 </style>

@@ -7,7 +7,7 @@
         ["isValid", "Valid"], ["isFull", "Full"], ["isBalanced", "Balanced"], ["depth"],
         ["nodeCount"], ["capacity"], ["freeCapacity"]
     ]
-    export let height;
+    export let height: number = 100;
 
     $: (console.log(height))
 
@@ -22,7 +22,7 @@
 </script>
 
 
-<div class="TreeInfoBar" bind:clientHeight={height}>
+<div class="TreeInfoBar" style="height: {height}px;">
     <div class="titleRow">
         <h3 class="title">Tree Information</h3>
     </div>
@@ -39,18 +39,13 @@
 
 <style>
     .TreeInfoBar {
-        /*position: absolute;*/
-        /*bottom: 0;*/
-        /*left: 0;*/
         width: 100%;
         margin: 0;
         padding: 0;
-        /*display: block;*/
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: center;
-        box-sizing: border-box;
     }
 
     .titleRow {
@@ -64,6 +59,8 @@
 
     .contentSection {
         width: 100%;
+        height: 100%;
+        border: 2px solid red;
         display: flex;
         align-items: center;
         justify-content: space-evenly;

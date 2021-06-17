@@ -3,7 +3,6 @@ import {writable, readable, derived, Writable, Readable} from "svelte/store"
 
 type PageSizeTarget = ("controls" | "main")
 
-
 interface PageSectionSizingObject {
     main: number[],
     tree: number[],
