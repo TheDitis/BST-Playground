@@ -4,8 +4,12 @@
 	import TreeInfoRow from "./Components/TreeInfoBar.svelte";
 	import TreeControls from "./Components/TreeControls.svelte";
 
+	import {tree} from "./stores/treeStores";
+
 	let controlBarWidth;
 	let infoBarHeight;
+
+	console.log("VALUE: ", $tree)
 
 	// let treeObj = {
 	// 	"nodes": [
@@ -22,8 +26,9 @@
 	// 	"root": "10"
 	// }
 
-	let preOrderTraversalValues = [10, 4, 2, 1, 3, 17, 19, 18]
-	let tree = BST.from(preOrderTraversalValues)
+	// let preOrderTraversalValues = [10, 4, 2, 1, 3, 17, 19, 18]
+
+	// let tree = BST.from(preOrderTraversalValues)
 
 	console.log("bar height: ", infoBarHeight)
 	// were passed to Tree
@@ -34,17 +39,17 @@
 <main>
 	<div class="treeAndControlsSection" bind:clientHeight={infoBarHeight}>
 
-		<TreeControls bind:tree={tree} bind:width={controlBarWidth} />
+		<TreeControls bind:tree={$tree} bind:width={controlBarWidth} />
 		<Tree
 				height={infoBarHeight}
 				width={window.innerWidth - controlBarWidth}
-				tree={tree}
+				tree={$tree}
 				nodeSize={100}
 				layerHeight={200}
 		/>
 	</div>
 
-	<TreeInfoRow bind:tree={tree}/>
+	<TreeInfoRow bind:tree={$tree}/>
 </main>
 
 <style>
@@ -54,7 +59,6 @@
 		left: 0;
 		padding: 0;
 		margin: 0;
-		/*height: 100vh;*/
 		width: 100vw;
 		box-sizing: border-box;
 		text-align: center;

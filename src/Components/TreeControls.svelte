@@ -1,12 +1,13 @@
 <script lang="ts">
     import BST from "../Structures/BST";
     import {tick} from "svelte";
+    import {sizes} from "../stores/stores";
 
     export let tree: BST<any>;
     export let width: number;
 
-    let dragBar: Element;
-    let barWidth: number = Math.max(window.innerWidth / 4, 300)
+    let dragBar: HTMLElement// Element;
+    // let barWidth: number = Math.max(window.innerWidth / 4, 300)
 
     let number: number = 0;
 
@@ -41,7 +42,7 @@
             console.log(e.clientX)
             dragDelta = e.clientX - dragStart
 
-            barWidth = e.clientX
+            sizes.setControlsWidth(e.clientX);
             console.log("in drag! change: ", dragDelta)
         }
     }
@@ -56,7 +57,7 @@
 </script>
 
 
-<div class="TreeControls" bind:clientWidth={width} style="--barWidth: {barWidth}px">
+<div class="TreeControls" bind:clientWidth={width} style="--barWidth: {$sizes.controls[0]}px">
 
     <div class="contentSection">
         <div class="insertSection">

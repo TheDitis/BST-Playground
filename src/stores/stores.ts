@@ -11,13 +11,20 @@ interface PageSectionSizingObject {
     info: number[]
 }
 
-const createSizeStores = (): object => {
+interface PageSizingStore {
+    subscribe: Function,
+    set: Function,
+    setMainHeight: Function,
+    setControlsWidth: Function
+}
+
+const createSizeStores = (): PageSizingStore => {
     const mainHeight: Writable<number> = writable(
         Math.floor(window.innerHeight * 0.8)
     );
     const controlWidth: Writable<number> = writable(300);
 
-    const sizes: Readable<PageSectionSizingObject> = derived(
+    const pageSizes: Readable<PageSectionSizingObject> = derived(
         [mainHeight, controlWidth],
         ([$mainHeight, $controlWidth]) => ({
             main: [window.innerWidth, $mainHeight],
@@ -49,7 +56,7 @@ const createSizeStores = (): object => {
     }
 
     return {
-        subscribe: sizes.subscribe,
+        subscribe: pageSizes.subscribe,
         set,
         setMainHeight,
         setControlsWidth
