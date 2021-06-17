@@ -53,6 +53,7 @@
 				targetName="main"
 				offset={true}
 				max={window.innerHeight - 180}
+				min={window.innerHeight - 300}
 		/>
 	</div>
 
