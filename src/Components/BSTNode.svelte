@@ -8,6 +8,7 @@
     export let layer: number = 1;
     export let layerHeight: number = 80;
 
+    console.log(layerHeight)
 
 
 </script>

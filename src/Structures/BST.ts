@@ -3,7 +3,6 @@ import _ from "lodash";
 // TODO: Catch up on documentation
 // TODO: Cache certain properties until structure changes to save resources
 
-// TODO: add remove and contains methods
 // TODO: Create subclass specifically for the svelte interface
 
 interface NodeObject {
@@ -53,6 +52,7 @@ export default class BST<T> {
     }
 
     insert(value: T) {
+        console.log("inserting ", value)
         if (value < this.value) {
             if (this.left === null) {
                 this.left = new BST(value);
@@ -551,3 +551,6 @@ export default class BST<T> {
 
 
 }
+
+
+

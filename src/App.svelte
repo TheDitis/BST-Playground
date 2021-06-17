@@ -1,9 +1,11 @@
 <script lang="ts">
 	import BST from "./Structures/BST";
 	import Tree from "./Components/Tree.svelte";
-	import TreeInfoRow from "./Components/TreeInfoRow.svelte";
+	import TreeInfoRow from "./Components/TreeInfoBar.svelte";
+	import TreeControls from "./Components/TreeControls.svelte";
 
-	export let name: string;
+	let controlBarWidth;
+	let infoBarHeight;
 
 	// let treeObj = {
 	// 	"nodes": [
@@ -23,66 +25,52 @@
 	let preOrderTraversalValues = [10, 4, 2, 1, 3, 17, 19, 18]
 	let tree = BST.from(preOrderTraversalValues)
 
-	// let tree = new BST(10);
-	// tree.left = new BST(4);
-	// tree.left.left = new BST(2);
-	// tree.left.left.left = new BST(1);
-	// tree.left.right = new BST(3);
-	// tree.right = new BST(17);
-	// tree.right.right = new BST(19);
-	// tree.right.right.left = new BST(18);
-
-	let tree2 = tree.inverted();
-	// let tree2: BST<any> = tree.copy();
-	// tree2.remove(10)
-	// tree2.remove(18)
+	console.log("bar height: ", infoBarHeight)
+	// were passed to Tree
+	// width={window.innerWidth}
+	// height={window.innerHeight}
 </script>
 
 <main>
-<!--	<Tree-->
-<!--		tree={tree}-->
-<!--		width={window.innerWidth}-->
-<!--		height={window.innerHeight}-->
-<!--		nodeSize={100}-->
-<!--		layerHeight={200}-->
-<!--	/>-->
-<!--	<TreeInfoRow {tree}/>-->
-	<div style="width: 100%; display: flex">
+	<div class="treeAndControlsSection" bind:clientHeight={infoBarHeight}>
+
+		<TreeControls bind:tree={tree} bind:width={controlBarWidth} />
 		<Tree
+				height={infoBarHeight}
+				width={window.innerWidth - controlBarWidth}
 				tree={tree}
-				width={window.innerWidth / 2}
-				height={window.innerHeight}
-				nodeSize={100}
-				layerHeight={200}
-		/>
-		<Tree
-				tree={tree2}
-				width={window.innerWidth / 2}
-				height={window.innerHeight}
 				nodeSize={100}
 				layerHeight={200}
 		/>
 	</div>
+
+	<TreeInfoRow bind:tree={tree}/>
 </main>
 
 <style>
 	main {
-		text-align: center;
+		position: absolute;
+		top: 0;
+		left: 0;
 		padding: 0;
-		max-width: 240px;
-		margin: 0 auto;
+		margin: 0;
+		/*height: 100vh;*/
+		width: 100vw;
+		box-sizing: border-box;
+		text-align: center;
+		background: rgba(50, 50, 50, 1);
+		color: white;
 	}
 
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
+	.treeAndControlsSection {
+		display: flex;
+		/*flex-direction: column;*/;
+		height: 90vh;
 	}
 
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
+	/*@media (min-width: 640px) {*/
+	/*	main {*/
+	/*		max-width: none;*/
+	/*	}*/
+	/*}*/
 </style>

@@ -7,6 +7,9 @@
         ["isValid", "Valid"], ["isFull", "Full"], ["isBalanced", "Balanced"], ["depth"],
         ["nodeCount"], ["capacity"], ["freeCapacity"]
     ]
+    export let height;
+
+    $: (console.log(height))
 
     const getPropName = (item: string | string[]): string => {
         return Array.isArray(item) ? item[0] : item;
@@ -19,7 +22,7 @@
 </script>
 
 
-<div class="TreeInfoRow">
+<div class="TreeInfoBar" bind:clientHeight={height}>
     <div class="titleRow">
         <h3 class="title">Tree Information</h3>
     </div>
@@ -35,12 +38,19 @@
 </div>
 
 <style>
-    .TreeInfoRow {
+    .TreeInfoBar {
+        /*position: absolute;*/
+        /*bottom: 0;*/
+        /*left: 0;*/
         width: 100%;
+        margin: 0;
+        padding: 0;
+        /*display: block;*/
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        box-sizing: border-box;
     }
 
     .titleRow {
