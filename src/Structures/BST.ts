@@ -242,6 +242,20 @@ export default class BST<T> {
     }
 
     get isFull(): boolean {
+        const isFullHelper = (node: BST<T>): boolean => {
+            if (node.left === null && node.right === null)
+                return true;
+            if (node.left === null || node.right === null)
+                return false;
+            const leftResult = isFullHelper(node.left);
+            const rightResult = isFullHelper(node.right);
+            return leftResult && rightResult;
+        }
+
+        return isFullHelper(this);
+    }
+
+    get nodeIsFull(): boolean {
         const nChildren: number = this.childCount;
         return (nChildren === 0 || nChildren === 2)
     }
