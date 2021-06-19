@@ -4,12 +4,10 @@
 
     export let tree: BST<any>;
     export let properties: string[][] | string[] = [
-        ["isValid", "Valid"], ["isFull", "Full"], ["isBalanced", "Balanced"], ["depth"],
+        ["isValid", "Valid"], ["isPerfect", "Perfect"], ["isFull", "Full"], ["isBalanced", "Balanced"], ["depth"],
         ["nodeCount"], ["capacity"], ["freeCapacity"]
     ]
     export let height: number = 100;
-
-    $: (console.log(height))
 
     const getPropName = (item: string | string[]): string => {
         return Array.isArray(item) ? item[0] : item;

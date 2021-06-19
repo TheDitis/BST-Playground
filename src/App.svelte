@@ -36,13 +36,17 @@
 	// were passed to Tree
 	// width={window.innerWidth}
 	// height={window.innerHeight}
+
+	let masterWidth: number, masterHeight: number;
+	$: sizes.setWindowSize(masterWidth, masterHeight);
 </script>
 
+<svelte:window bind:innerWidth={masterWidth} bind:innerHeight={masterHeight}/>
 <main>
 	<div class="treeAndControlsSection" style="height: {$sizes.main[1]}px">
 		<TreeControls bind:tree={$tree}/>
 		<Tree
-				height={$sizes.info[1]}
+				height={$sizes.tree[1]}
 				width={$sizes.tree[0]}
 				tree={$tree}
 				nodeSize={100}
@@ -79,6 +83,7 @@
 		display: flex;
 		z-index: 20;
 		border-bottom: 10px solid rgba(42, 42, 42, 1);
+		/*overflow: scroll;*/
 		/*flex-direction: column;*/;
 		/*height: 90vh;*/
 	}

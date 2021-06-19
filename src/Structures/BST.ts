@@ -255,6 +255,11 @@ export default class BST<T> {
         return isFullHelper(this);
     }
 
+    get isPerfect(): boolean {
+        // TODO: make this more efficient
+        return this.potentialCapacityAtHeight(this.depth) == this.nodeCount;
+    }
+
     get nodeIsFull(): boolean {
         const nChildren: number = this.childCount;
         return (nChildren === 0 || nChildren === 2)

@@ -10,17 +10,19 @@
 
     console.log("height: ", height)
 
-    if (height !== null) {
-        // TODO: See if you can make tree a required parameter when at wifi, or handle absence
-        layerHeight = Math.floor(height / tree.depth)
-    }
+    // if (height !== null) {
+    //     // TODO: See if you can make tree a required parameter when at wifi, or handle absence
+    //     layerHeight = Math.floor(height / tree.depth)
+    // }
+    //
+    $: windowHeight = height ? height : layerHeight * tree.depth;
 </script>
 
 {#if layerHeight}
     <div
             class="Tree"
             style="
-                --height: {layerHeight * tree.depth}px;
+                --height: {windowHeight}px;
                 --width: {width}px;
                 --topPadding: {nodeSize / 2}px;
             "
@@ -32,18 +34,19 @@
 
 <style>
     .Tree {
-        overflow: scroll;
-        display: block;
-        /*display: flex;*/
+        overflow-y: scroll;
+        /*display: block;*/
+        display: flex;
         /*align-items: center;*/
-        /*justify-content: center;*/
+        justify-content: center;
         position: relative;
         height: var(--height);
         width: var(--width);
-        border: 2px solid rgba(0, 0, 0, 0.5);
+        /*border: 2px solid rgba(0, 0, 0, 0.5);*/
         margin: 0;
         padding: 0;
+        padding-bottom: var(--topPadding);
         padding-top: var(--topPadding);
-        box-sizing: content-box;
+        box-sizing: border-box;
     }
 </style>

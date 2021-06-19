@@ -14,7 +14,8 @@ interface PageSizingStore {
     subscribe: Function,
     set: Function,
     setMainHeight: Function,
-    setControlsWidth: Function
+    setControlsWidth: Function,
+    setWindowSize: Function
 }
 
 const createSizeStores = (): PageSizingStore => {
@@ -23,13 +24,17 @@ const createSizeStores = (): PageSizingStore => {
     );
     const controlWidth: Writable<number> = writable(300);
 
+    /// MUST BIND THESE TO WINDOW FOR APP TO RESIZE PROPERLY!
+    const windowWidth: Writable<number> = writable(window.innerWidth);
+    const windowHeight: Writable<number> = writable(window.innerHeight);
+
     const pageSizes: Readable<PageSectionSizingObject> = derived(
-        [mainHeight, controlWidth],
-        ([$mainHeight, $controlWidth]) => ({
-            main: [window.innerWidth, $mainHeight],
-            tree: [window.innerWidth - $controlWidth, $mainHeight],
+        [mainHeight, controlWidth, windowWidth, windowHeight],
+        ([$mainHeight, $controlWidth, $windowWidth, $windowHeight]) => ({
+            main: [$windowWidth, $mainHeight],
+            tree: [$windowWidth - $controlWidth, $mainHeight],
             controls: [$controlWidth, $mainHeight],
-            info: [window.innerWidth, window.innerHeight - $mainHeight]
+            info: [$windowWidth, $windowHeight - $mainHeight]
         })
     )
 
@@ -54,11 +59,20 @@ const createSizeStores = (): PageSizingStore => {
         set(value, "controls")
     }
 
+    const setWindowSize = (
+        width: number | null = null,
+        height: number | null = null
+    ) => {
+        if (width !== null) windowWidth.set(width);
+        if (height !== null) windowHeight.set(height);
+    }
+
     return {
         subscribe: pageSizes.subscribe,
         set,
         setMainHeight,
-        setControlsWidth
+        setControlsWidth,
+        setWindowSize
     }
 }
 
