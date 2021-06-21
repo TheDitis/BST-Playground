@@ -35,6 +35,7 @@
 <style>
     .Tree {
         overflow-y: scroll;
+        overflow-x: hidden;
         /*display: block;*/
         display: flex;
         /*align-items: center;*/
@@ -43,10 +44,27 @@
         height: var(--height);
         width: var(--width);
         /*border: 2px solid rgba(0, 0, 0, 0.5);*/
+
+        background: rgba(50, 50, 50, 1);
+        /*border: 2px solid orange;*/
         margin: 0;
         padding: 0;
         padding-bottom: var(--topPadding);
         padding-top: var(--topPadding);
         box-sizing: border-box;
     }
+
+    ::-webkit-scrollbar {
+        /*display: none;*/
+        background: rgba(50, 50, 50, 1);
+        width: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.4);
+        border-radius: 10px;
+    }
+    /*.tree::-webkit-scrollbar-track {*/
+    /*    border: 2px solid red;*/
+    /*}*/
 </style>

@@ -8,18 +8,22 @@
     export let layer: number = 1;
     export let layerHeight: number = 80;
 
-    console.log(layerHeight)
-
 
 </script>
 
 
 
 
-<div class="BSTNode" style="--layerHeight: {node.hasChildren ? layerHeight : nodeSize}px">
+<div
+        class="BSTNode"
+        style="--layerHeight: {node.hasChildren ? layerHeight : nodeSize}px"
+>
 
     <div class="selfSection">
-        <div class="node" style="--nodeSize: {nodeSize}">
+        <div
+                class="node"
+                style="--nodeSize: {nodeSize};"
+        >
             <h1>{node.value}</h1>
         </div>
 
@@ -57,6 +61,7 @@
 
 <style>
     .BSTNode {
+        user-select: none;
         position: relative;
         display: flex;
         box-sizing: border-box;
@@ -83,6 +88,8 @@
         margin: 0;
         background: rgba(0, 200, 200, 0.4);
         border: 2px solid rgba(0, 200, 200, 0.4);
+        /*background: var(--color);*/
+        /*border: 2px solid var(--color);*/
         border-radius: 50%;
         box-sizing: border-box;
         display: flex;

@@ -2,17 +2,6 @@ import {writable, readable, derived, Writable, get} from "svelte/store"
 import BST from "../Structures/BST";
 
 
-// class Test extends BST<any> {
-//     selected: Writable<boolean>;
-//
-//     constructor(value: number = 0) {
-//         super(value);
-//         this.selected = writable(false);
-//     }
-//
-//
-// }
-
 
 const createTree = (rootValue: number = 0) => {
     const tree: Writable<BST<number>> = writable(new BST(rootValue))
@@ -32,8 +21,6 @@ const createTree = (rootValue: number = 0) => {
         tempTree.insert(value);
         tree.set(tempTree)
     }
-
-    // set(rootValue)
 
     return {
         subscribe: tree.subscribe,

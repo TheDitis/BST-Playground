@@ -4,6 +4,8 @@
 	import TreeInfoRow from "./Components/TreeInfoBar.svelte";
 	import TreeControls from "./Components/TreeControls.svelte";
 
+
+
 	import {sizes} from "./stores/stores";
 	import {tree} from "./stores/treeStores";
 	import DragResizeBar from "./Components/DragResizeBar.svelte";
@@ -82,9 +84,24 @@
 		position: relative;
 		display: flex;
 		z-index: 20;
-		border-bottom: 10px solid rgba(42, 42, 42, 1);
+		/*border-bottom: 10px solid rgba(42, 42, 42, 1);*/
+		background: rgba(50, 50, 50, 1);
+		/*border: 2px solid red;*/
 		/*overflow: scroll;*/
 		/*flex-direction: column;*/;
 		/*height: 90vh;*/
+	}
+
+	::-webkit-scrollbar {
+		width: 1em;
+	}
+
+	::-webkit-scrollbar-track {
+		box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+		background: rgba(50, 50, 50, 1);
+	}
+	::-webkit-scrollbar-thumb {
+		background-color: darkgrey;
+		outline: 1px solid slategrey;
 	}
 </style>
